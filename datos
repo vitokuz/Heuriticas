@@ -1,0 +1,42 @@
+
+#calcula el costo de la solucion actual
+def calcular_costo(solucion, matriz_distancias):
+    costo_total = 0
+    nodo_anterior = 0 
+    for nodo in solucion:
+        costo_total += matriz_distancias[nodo_anterior][nodo]
+        nodo_anterior = nodo
+    if nodo_anterior != 0:
+        costo_total += matriz_distancias[nodo_anterior][0]
+
+    return round(costo_total, 2)
+
+#revisa si la solucion es factible.
+#infactible si :
+#1. algun camion gasta más de su capacidad en alguna ruta
+#2. No se visitan todos los nodos (esa la haces ustedes, no está hecha =) )
+def calcular_factibilidad(solucion, demandas, capacidad):
+    carga_actual = 0
+    for nodo in solucion:
+        if nodo == 0:
+            if carga_actual > capacidad:
+                return False
+            carga_actual = 0  
+        else:
+            carga_actual += demandas[nodo]
+
+    return True
+
+#borra los ceros extra o agrega al inicio / final, si hacen falta
+def normalizar_solucion(solucion):
+    if not solucion or solucion[0] != 0:
+        solucion = [0] + solucion
+    if solucion[-1] != 0:  
+        #por si alguien no entiende, la posicion -1 en python, es la ultima posicion 
+        solucion = solucion + [0]  #de esta forma no borramos la lista de la memoria. por seguridad
+    solucion_normalizada = [solucion[0]]
+    for i in range(1, len(solucion)):
+        if solucion[i] != 0 or solucion[i - 1] != 0:
+            solucion_normalizada.append(solucion[i])
+
+    return solucion_normalizada
